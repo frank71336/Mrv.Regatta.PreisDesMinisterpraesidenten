@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Einstellungen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+			   xsi:noNamespaceSchemaLocation="file://D:/DATEN/Programmierung/C%23/Mrv.Regatta.PreisDesMinisterpraesidenten/code/Mrv.Regatta.PreisDesMinisterpraesidenten/einstellungen.xsd"
+			   Profilname="LM">
+  
+  <Profil Profilname="MRV" 
+          RegExRennen="^[^Z].*$" 
+          RegExLaufTyp="^EF$" 
+          RenngemeinschaftenTeilen="TeilenOhnePunkte">
+    <ConnectionStringDatenDb ProviderName="Access" ConnectionString="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\regatta_mrv\daten\daten.mdb;Locale Identifier=1033;Jet OLEDB:Engine Type=5;Persist Security Info=True" />
+    <ConnectionStringZeitmessDb ProviderName="Access" ConnectionString="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\regatta_mrv\zeitmess\zeitmess.mdb;Locale Identifier=1033;Jet OLEDB:Engine Type=5;Persist Security Info=True" />
+	<Wertungsschluessel>
+      <Einer  Platz1="1" Platz2="0" Platz3="0" Platz4="0" Platz5="0" Platz6="0" />
+      <Zweier Platz1="1" Platz2="0" Platz3="0" Platz4="0" Platz5="0" Platz6="0" />
+      <Vierer Platz1="1" Platz2="0" Platz3="0" Platz4="0" Platz5="0" Platz6="0" />
+      <Achter Platz1="1" Platz2="0" Platz3="0" Platz4="0" Platz5="0" Platz6="0" />
+    </Wertungsschluessel>
+  </Profil>
+
+  <Profil Profilname="LM"
+          RegExRennen="^L.*$"
+          RegExLaufTyp="^EF$"
+          RenngemeinschaftenTeilen="NichtTeilen">
+    <ConnectionStringDatenDb ProviderName="Access" ConnectionString="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\regatta_lm\daten\daten.mdb;Locale Identifier=1033;Jet OLEDB:Engine Type=5;Persist Security Info=True" />
+    <ConnectionStringZeitmessDb ProviderName="Access" ConnectionString="Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\regatta_lm\zeitmess\zeitmess.mdb;Locale Identifier=1033;Jet OLEDB:Engine Type=5;Persist Security Info=True" />
+	<Wertungsschluessel>
+      <Einer  Platz1="10" Platz2="5"    Platz3="4"  Platz4="3"   Platz5="2" Platz6="1" />
+      <Zweier Platz1="15" Platz2="7.5"  Platz3="6"  Platz4="4.5" Platz5="3" Platz6="1.5" />
+      <Vierer Platz1="20" Platz2="10"   Platz3="8"  Platz4="6"   Platz5="4" Platz6="2" />
+      <Achter Platz1="25" Platz2="12.5" Platz3="10" Platz4="7.5" Platz5="5" Platz6="2.5" />
+    </Wertungsschluessel>
+  </Profil>
+  
+</Einstellungen>

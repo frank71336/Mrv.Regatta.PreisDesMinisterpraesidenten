@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns="" id="User" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Einstellungen" type="Einstellungen" />
+  <xs:complexType name="CT_Wertungsschluessel">
+    <xs:sequence minOccurs="1" maxOccurs="1">
+      <xs:element minOccurs="1" maxOccurs="1" name="Einer" type="CT_Punkte" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Zweier" type="CT_Punkte" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Vierer" type="CT_Punkte" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Achter" type="CT_Punkte" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CT_Punkte">
+    <xs:attribute name="Platz1" type="xs:float" use="required" />
+    <xs:attribute name="Platz2" type="xs:float" use="required" />
+    <xs:attribute name="Platz3" type="xs:float" use="required" />
+    <xs:attribute name="Platz4" type="xs:float" use="required" />
+    <xs:attribute name="Platz5" type="xs:float" use="required" />
+    <xs:attribute name="Platz6" type="xs:float" use="required" />
+  </xs:complexType>
+  <xs:complexType name="Einstellungen">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="unbounded" name="Profil">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="ConnectionStringDatenDb" type="CT_ConnectionString" />
+            <xs:element minOccurs="1" maxOccurs="1" name="ConnectionStringZeitmessDb" type="CT_ConnectionString" />
+            <xs:element minOccurs="1" maxOccurs="1" name="Wertungsschluessel" type="CT_Wertungsschluessel" />
+          </xs:sequence>
+          <xs:attribute name="Profilname" type="xs:string" use="required" />
+          <xs:attribute name="RegExRennen" type="xs:string" use="required" />
+          <xs:attribute name="RegExLaufTyp" type="xs:string" use="required" />
+          <xs:attribute name="RenngemeinschaftenTeilen" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="NichtTeilen" />
+                <xs:enumeration value="TeilenOhnePunkte" />
+                <xs:enumeration value="TeilenMitPunkte" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Profilname" type="xs:string" use="required" />
+  </xs:complexType>
+  <xs:complexType name="CT_ConnectionString">
+    <xs:attribute name="ProviderName" type="xs:string" use="required" />
+    <xs:attribute name="ConnectionString" type="xs:string" use="required" />
+  </xs:complexType>
+</xs:schema>

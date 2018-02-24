@@ -1,0 +1,21 @@
+﻿Version 1.0:
+	* Erste Version
+
+Version: 1.1:
+	* Mehr Debug-Ausgaben: Programm-Version, Profilname und Connection-Strings am Anfang
+	* Fehler beseitigt: Wenn ein Rennen hart-kodiert verändert wird, dann gibt es einen
+	  Fehler, wenn es das Rennen gar nicht gibt (wenn man das Profil umgeschaltet hat)
+
+Version 1.2 :
+	* Berücksichtigung von Abteilungen
+	* Verbesserung ungültige Formel bei den Spalten-Summen
+
+Version 1.3 :
+	* Summen-Formeln nicht mehr länger als absolute Bezüge, damit das Sortieren funktioniert
+	* Alle Einstellungen nun komplett in 'einstellungen.xml'.
+	  Keine Einstellungen mehr in 'Mrv.Regatta.PreisDesMinisterpraesidenten.exe.config.exe.config'
+
+Version 1.4 :
+	* Beim Aufteilen der Renngemeinschaften ('RenngemeinschaftenTeilen') kann man nun auch
+	  die Punkte anteilig auf die betroffenen Vereine aufteilen lassen.
+	  (Mögliche Einstellungen sind nun 'NichtTeilen', 'TeilenOhnePunkte' und 'TeilenMitPunkte')
