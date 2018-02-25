@@ -19,3 +19,7 @@ Version 1.4 :
 	* Beim Aufteilen der Renngemeinschaften ('RenngemeinschaftenTeilen') kann man nun auch
 	  die Punkte anteilig auf die betroffenen Vereine aufteilen lassen.
 	  (Mögliche Einstellungen sind nun 'NichtTeilen', 'TeilenOhnePunkte' und 'TeilenMitPunkte')
+	  
+Version 1.4 :
+	* Excel-Tabelle (results.xlsx) darf jetzt in Maßen verändert werden. Datei wird beim erneuten
+	  Anstarten nicht neu erstellt sondern erweitert.

@@ -364,98 +364,342 @@ namespace Mrv.Regatta.PreisDesMinisterpraesidenten
 
             #region XLSX-Datei erzeugen
 
-            var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add("Tabelle");
-            
-            var racesColStart = 2;
-            var racesColEnd = 2 + tableRaces.Count() - 1;
-
             var clubsRowStart = 3;
-            var clubsRowEnd = 3 + clubList.Count() - 1;
+            var racesColStart = 2;
+            var CELLSUMME = "Summe";
 
-            // ------------------------------------- Header
-
-            var row = 1;
-            worksheet.Cell(row, 1).Value = "Verein";
-
-            var col = racesColStart;
-            foreach (var tableRace in tableRaces)
+            var xlsxFile = "results.xlsx";
+            if (!System.IO.File.Exists(xlsxFile))
             {
-                worksheet.Cell(row, col).Value = tableRace.Name;
-                worksheet.Cell(row, col).Style.Font.Bold = true;
-                col++;
-            }
+                // Datei existiert noch nicht
+                
+                var racesColEnd = 2 + tableRaces.Count() - 1; // das hier darf man nicht verwenden, wenn die Datei schon existiert schließilch könnten in der Datei weniger Einträge drin stehen!
+                var clubsRowEnd = 3 + clubList.Count() - 1;   // das hier darf man nicht verwenden, wenn die Datei schon existiert schließilch könnten in der Datei weniger Einträge drin stehen!
 
-            worksheet.Cell(row, racesColEnd + 1).Value = "Summe";
-            worksheet.Cell(row, racesColEnd + 2).Value = "Korrektur";
-            worksheet.Cell(row, racesColEnd + 3).Value = "Gesamtsumme";
+                #region Datei neu erzeugen
 
-            // ------------------------------------- Anzahl Ruderer
-            row = 2;
-            col = racesColStart;
-            foreach(var tableRace in tableRaces)
-            {
-                worksheet.Cell(row, col).Value = tableRace.RowersCount;
-                worksheet.Cell(row, col).Style.Font.Italic = true;
-                col++;
-            }
+                var workbook = new XLWorkbook();
+                var worksheet = workbook.Worksheets.Add("Tabelle");
 
-            // ------------------------------------- Vereine
-            row = 3;
+                // ------------------------------------- Header
 
-            // alle Vereine die in der Tabelle vorkommen durchgehen ---> Zeilen
-            foreach (var club in clubList)
-            {
-                // für jeden Verein die Rennen durchgehen
-                float count = 0;
+                var row = 1;
+                worksheet.Cell(row, 1).Value = "Verein";
 
-                // Vereinsname
-                worksheet.Cell(row, 1).Value = club.Verein.VVereinsnamenKurz;
-                worksheet.Cell(row, 1).Style.Font.Bold = true;
-
-                col = racesColStart;
-                foreach (var tableRace in tableRaces) // ---> Spalten
+                var col = racesColStart;
+                foreach (var tableRace in tableRaces)
                 {
-                    // schauen, wie viel Punkte der aktuelle Verein in aktuellen Rennen gemacht hat
-                    var club1 = tableRace.Clubs.SingleOrDefault(x => x.Verein.VIDVerein == club.Verein.VIDVerein);
-                    if (club1 == null)
-                    {
-                        // Verein hat gar keine Punkte gemacht, nichts einzutragen
-                    }
-                    else
-                    {
-                        // Verein hat Punkte gemacht
-                        worksheet.Cell(row, col).Value = club1.Points;
-                    }
-
+                    worksheet.Cell(row, col).Value = tableRace.Name;
+                    worksheet.Cell(row, col).Style.Font.Bold = true;
                     col++;
                 }
 
-                // (horizontale) Summe hinten noch dranhängen
-                worksheet.Cell(row, col).FormulaA1 = $"sum({racesColStart.Col()}{row}:{racesColEnd.Col()}{row})";
-                worksheet.Cell(row, col).Style.Font.Italic = true;
+                worksheet.Cell(row, racesColEnd + 1).Value = CELLSUMME;
+                worksheet.Cell(row, racesColEnd + 2).Value = "Korrektur";
+                worksheet.Cell(row, racesColEnd + 3).Value = "Gesamtsumme";
 
-                // Summe mit Korrektur noch dranhängen (1 Spalte dazwischen frei
-                worksheet.Cell(row, col + 2).FormulaR1C1 = $"sum({(racesColEnd + 1).Col()}{row}:{(racesColEnd + 2).Col()}{row})";
+                // ------------------------------------- Anzahl Ruderer
+                row = 2;
+                col = racesColStart;
+                foreach (var tableRace in tableRaces)
+                {
+                    worksheet.Cell(row, col).Value = tableRace.RowersCount;
+                    worksheet.Cell(row, col).Style.Font.Italic = true;
+                    col++;
+                }
 
-                row++;
+                // ------------------------------------- Vereine
+                row = 3;
+
+                // alle Vereine die in der Tabelle vorkommen durchgehen ---> Zeilen
+                foreach (var club in clubList)
+                {
+                    // für jeden Verein die Rennen durchgehen
+                    float count = 0;
+
+                    // Vereinsname
+                    worksheet.Cell(row, 1).Value = club.Verein.VVereinsnamenKurz;
+                    worksheet.Cell(row, 1).Style.Font.Bold = true;
+
+                    col = racesColStart;
+                    foreach (var tableRace in tableRaces) // ---> Spalten
+                    {
+                        // schauen, wie viel Punkte der aktuelle Verein in aktuellen Rennen gemacht hat
+                        var club1 = tableRace.Clubs.SingleOrDefault(x => x.Verein.VIDVerein == club.Verein.VIDVerein);
+                        if (club1 == null)
+                        {
+                            // Verein hat gar keine Punkte gemacht, nichts einzutragen
+                        }
+                        else
+                        {
+                            // Verein hat Punkte gemacht
+                            worksheet.Cell(row, col).Value = club1.Points;
+                        }
+
+                        col++;
+                    }
+
+                    // (horizontale) Summe hinten noch dranhängen
+                    worksheet.Cell(row, col).FormulaA1 = $"sum({racesColStart.Col()}{row}:{racesColEnd.Col()}{row})";
+                    worksheet.Cell(row, col).Style.Font.Italic = true;
+
+                    // Summe mit Korrektur noch dranhängen (1 Spalte dazwischen frei
+                    worksheet.Cell(row, col + 2).FormulaR1C1 = $"sum({(racesColEnd + 1).Col()}{row}:{(racesColEnd + 2).Col()}{row})";
+
+                    row++;
+                }
+
+                // unten dran die vertikale Summe
+                worksheet.Cell(row, 1).Value = CELLSUMME;
+                col = racesColStart;
+
+                foreach (var tableRace in tableRaces) // ---> Spalten
+                {
+                    worksheet.Cell(row, col).FormulaA1 = $"sum({col.Col()}{clubsRowStart}:{col.Col()}{clubsRowEnd})";
+                    worksheet.Cell(row, col).Style.Font.Italic = true;
+                    col++;
+                }
+
+                workbook.SaveAs(xlsxFile);
+
+                Tools.OutputText();
+                Tools.OutputText("XLSX-Datei erzeugt.", ConsoleColor.DarkYellow);
+
+                #endregion
+
             }
-
-            // unten dran die vertikale Summe
-            worksheet.Cell(row, 1).Value = "Summe";
-            col = racesColStart;
-
-            foreach (var tableRace in tableRaces) // ---> Spalten
+            else
             {
-                worksheet.Cell(row, col).FormulaA1 =$"sum({col.Col()}{clubsRowStart}:{col.Col()}{clubsRowEnd})";
-                worksheet.Cell(row, col).Style.Font.Italic = true;
-                col++;
+                // Es gibt die Datei bereits
+
+                #region Datei korrigieren
+
+                var workbook = new XLWorkbook(xlsxFile);
+
+                if (workbook.Worksheets.Count != 1)
+                {
+                    throw new Exception($"Excel-Datei {xlsxFile} muss genau ein Arbeitsblatt enthalten!");
+                }
+
+                // Arbeitsblatt holen
+                var worksheet = workbook.Worksheets.Single();
+
+                // Alle Zellen auf weiß
+                var cells = worksheet.Cells(false);
+                cells.Style.Fill.BackgroundColor = XLColor.NoColor;
+
+                #region Schauen ob in der Excel-Datei eine Zeile (=Verein) fehlt
+
+                // erste Spalte, da stehen die Vereine
+                var clubColumn = worksheet.Column(1);
+
+                var clubListToCheck = clubList.ToList(); // Kopie der Liste, die man verändern kann
+
+                // Alle Vereine, die in die Datei müssen durchgehen
+                while (clubListToCheck.Any())
+                {
+                    // Ein Element aus der Liste entfernen und dann betrachtet
+                    var clubToCheck = clubListToCheck.First();
+                    clubListToCheck.Remove(clubToCheck);
+
+                    // Datei auslesen
+                    var sumCell = clubColumn.Cells().First(x => x.GetValue<string>() == CELLSUMME);
+                    var clubCells = clubColumn.Cells(3, sumCell.Address.RowNumber - 1);
+
+                    // zu jedem Verein braucht man zum Sortieren nun auch noch die Stadt ("VStadt"), daher das ganze Club-Objekt übernehmen
+                    var clubsFromFile = new List<TVerein>();
+                    foreach (var clubCell in clubCells)
+                    {
+                        var vereinsName = clubCell.GetValue<string>();
+                        var club = clubList.Single(c => c.Verein.VVereinsnamenKurz == vereinsName);
+                        clubsFromFile.Add(club.Verein);
+                    }
+                    
+                    // schauen, ob der Verein schon in der Datei steht
+                    var testClub = clubsFromFile.SingleOrDefault(x => x.VVereinsnamenKurz == clubToCheck.Verein.VVereinsnamenKurz);
+                    if (testClub != null)
+                    {
+                        // Verein gefunden
+                        // alles gut
+                    }
+                    else
+                    {
+                        // Verein nicht gefunden, das ist schlecht
+                        // => dann muss er hinzugefügt werden
+
+                        // Um zu sehen wo er in der Datei eingefügt werden muss, wird er an die Clubliste hinten dran gefügt.
+                        // Die Liste wird dann sortiert, dann wird geschaut wo das Element nach dem Sortieren gelandet ist und
+                        // damit hat man den Index für das Einsortieren in die Datei.
+                        // Sortierung ist anhand der Stadt gewünscht!
+
+                        clubsFromFile.Add(clubToCheck.Verein);
+                        clubsFromFile.Sort((x, y) => x.VStadt.CompareTo(y.VStadt));
+
+                        var index = clubsFromFile.IndexOf(clubToCheck.Verein);
+
+                        var rowNumber = clubsRowStart + index;
+                        worksheet.Row(rowNumber).InsertRowsAbove(1);
+                        var newCell = worksheet.Cell(rowNumber, 1);
+                        newCell.SetValue<string>(clubToCheck.Verein.VVereinsnamenKurz);
+                        newCell.Style.Fill.BackgroundColor = XLColor.Red;
+
+                        // Summen-Spalten (hinten) erstellen
+                        var cellSumme = worksheet.Row(1).Cells().Single(x => x.GetValue<string>() == CELLSUMME);
+                        var colCellSumme = cellSumme.Address.ColumnNumber;
+                    }
+                }
+
+                #endregion
+
+                #region Schauen ob in der Excel-Datei eine Spalte (=Rennen) fehlt
+
+                {
+                    // erste Spalte, da stehen die Vereine
+                    var racesRow = worksheet.Row(1);
+
+                    var races = tableRaces.ToList(); // Kopie der Liste, die man verändern kann
+
+                    while (races.Any())
+                    {
+                        // Ein Element aus der Liste entfernen und dann betrachtet
+                        var raceToCheck = races.First();
+                        races.Remove(raceToCheck);
+
+                        // schauen, ob das Rennen schon in der Datei steht
+                        var testRace = racesRow.Cells().SingleOrDefault(x => x.GetValue<string>() == raceToCheck.Name);
+                        if (testRace != null)
+                        {
+                            // es gibt das Rennen schon in der Datei
+                            // => alles OK
+                        }
+                        else
+                        {
+                            // es gibt das Rennen onch nicht in der Datei
+                            // schlecht
+
+                            int columnNumberNewRace;
+
+                            // wenn es dieses Rennen in der Datei nicht gibt, dann muss es aber zumindest das Rennen davon geben!
+                            // nach dem Rennen in der Original-Liste suchen
+                            var indexCurrentRace = tableRaces.IndexOf(raceToCheck);
+                            if (indexCurrentRace == 0)
+                            {
+                                // es ist das 1. Rennen, dann kann es kein Rennen "davor" geben
+                                columnNumberNewRace = 2;
+                            }
+                            else
+                            {
+                                // es ist nicht das 1. Rennen, dann müsste es ein Rennen davor geben
+                                var raceBeforeIndex = indexCurrentRace - 1;
+                                var raceBefore = tableRaces[raceBeforeIndex];
+
+                                // nach diesem Rennen nun in der Datei suchen
+                                var testRaceBefore = racesRow.Cells().SingleOrDefault(x => x.GetValue<string>() == raceBefore.Name);
+
+                                if (testRaceBefore == null)
+                                {
+                                    // auch das Rennen davor wird nicht gefunden
+                                    // => darf nicht sein
+                                    throw new Exception($"Rennen '{raceToCheck.Name}' nicht in Datei gefunden und das Rennen davor ('{raceBefore.Name}') auch nicht!");
+                                }
+
+                                columnNumberNewRace = testRaceBefore.Address.ColumnNumber + 1;
+                            }
+
+                            worksheet.Column(columnNumberNewRace).InsertColumnsBefore(1);
+
+                            // Name Rennen
+                            var cell1 = worksheet.Cell(1, columnNumberNewRace);
+                            cell1.SetValue<string>(raceToCheck.Name);
+                            cell1.Style.Fill.BackgroundColor = XLColor.Red;
+
+                            // Anzahl Ruderer
+                            var cell2 = worksheet.Cell(2, columnNumberNewRace);
+                            cell2.SetValue<int>(raceToCheck.RowersCount);
+                            cell2.Style.Font.Italic = true;
+                            cell2.Style.Fill.BackgroundColor = XLColor.Red;
+                        }
+                    }
+
+                }
+
+                #endregion
+
+                #region Alle Summen-Formeln (unten) anpassen
+
+                {
+                    var cellSummeUnten = worksheet.Column(1).Cells().First(x => x.GetValue<string>() == CELLSUMME);
+                    var rowNumberSummeUnten = cellSummeUnten.Address.RowNumber;
+                    var cellSummeRechts = worksheet.Row(1).Cells().First(x => x.GetValue<string>() == CELLSUMME);
+                    var columnNumberSummeRechts = cellSummeRechts.Address.ColumnNumber;
+
+                    for (int columnNo = 2; columnNo <= (columnNumberSummeRechts - 1); columnNo++)
+                    {
+                        var cellSumme = worksheet.Cell(rowNumberSummeUnten, columnNo);
+                        cellSumme.FormulaA1 = $"sum({cellSumme.Address.ColumnNumber.Col()}{clubsRowStart}:{cellSumme.Address.ColumnNumber.Col()}{cellSumme.Address.RowNumber - 1})";
+                        cellSumme.Style.Font.Italic = true;
+                    }
+                }
+
+                #endregion
+
+                #region Alle Summen-Formeln (hinten) anpassen
+
+                {
+                    var cellSummeUnten = worksheet.Column(1).Cells().First(x => x.GetValue<string>() == CELLSUMME);
+                    var rowNumberSummeUnten = cellSummeUnten.Address.RowNumber;
+                    var cellSummeRechts = worksheet.Row(1).Cells().First(x => x.GetValue<string>() == CELLSUMME);
+                    var columnNumberSummeRechts = cellSummeRechts.Address.ColumnNumber;
+
+                    for (int rowNo = 3; rowNo <= (rowNumberSummeUnten - 1); rowNo++)
+                    {
+                        // 1. Summme
+                        var cellSumme = worksheet.Cell(rowNo, columnNumberSummeRechts);
+                        cellSumme.FormulaA1 = $"sum({racesColStart.Col()}{rowNo}:{(cellSumme.Address.ColumnNumber - 1).Col()}{rowNo})";
+                        cellSumme.Style.Font.Italic = true;
+
+                        // 2. Summme, zwei Spalten weiter
+                        cellSumme = worksheet.Cell(rowNo, columnNumberSummeRechts + 2);
+                        cellSumme.FormulaA1 = $"sum({cellSummeRechts.Address.ColumnNumber.Col()}{rowNo}:{(cellSummeRechts.Address.ColumnNumber + 1).Col()}{rowNo})";
+                        cellSumme.Style.Font.Italic = true;
+                    }
+                }
+
+                #endregion
+
+                #region Alle Daten durchgehen, schauen, ob sie schon drin stehen
+
+                // alle Rennen durchgehen
+                foreach (var race in tableRaces)
+                {
+                    // das Rennen finden
+                    var raceCell = worksheet.Row(1).Cells().Single(x => x.GetValue<string>() == race.Name);
+
+                    foreach (var club in race.Clubs)
+                    {
+                        // den Verein finden
+                        var clubCell = worksheet.Column(1).Cells().Single(x => x.GetValue<string>() == club.Verein.VVereinsnamenKurz);
+
+                        var cell = worksheet.Cell(clubCell.Address.RowNumber, raceCell.Address.ColumnNumber);
+
+                        if (cell.GetValue<string>() != club.Points.ToString())
+                        {
+                            cell.Value = club.Points;
+                            cell.Style.Fill.BackgroundColor = XLColor.Red;
+                        }
+                    }
+                }
+
+                #endregion
+
+                workbook.Save();
+
+                Tools.OutputText();
+                Tools.OutputText("XLSX-Datei angepasst.", ConsoleColor.DarkYellow);
+
+                #endregion
+
             }
-
-            workbook.SaveAs("results.xlsx");
-
-            Tools.OutputText();
-            Tools.OutputText("XLSX-Datei erzeugt.", ConsoleColor.DarkYellow);
 
             #endregion
         }
