@@ -753,7 +753,8 @@ namespace Mrv.Regatta.PreisDesMinisterpraesidenten
                 {
                     case EinstellungenProfilRenngemeinschaftenTeilen.NichtTeilen:
                         // keine Teilung
-                        // die Liste der Renngemeinschaften besteht nur aus dem Verein selbst
+                        // die Renngemeinschaft bekommt die Punkte alleine, die beteiligten Vereine gehen leer aus.
+                        // die Liste der Renngemeinschaften besteht nur aus dem Verein (der Renngemeinschaft) selbst
                         subClubs = new string[] { club.VIDVerein.ToString() };
                         break;
 
